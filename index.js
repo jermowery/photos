@@ -185,7 +185,7 @@ updatePhoto();
 
 setInterval(() => {
   updatePhoto();
-}, 1000 * 10);
+}, 1000 * 60 * 3);
 
 async function getPhoto(id) {
   const accessToken = await getAccessToken();
