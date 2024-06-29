@@ -38,7 +38,7 @@ async function setDateAndTime() {
   });
 
   const tempertureElement = document.getElementById("temperature");
-  tempertureElement.textContent = `${period.temperature} °F`;
+  tempertureElement.textContent = `${period.temperature}°F, ${period.shortForecast}`;
 }
 
 setDateAndTime();
