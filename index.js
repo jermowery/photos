@@ -9,8 +9,10 @@ const tokenUrl = "https://oauth2.googleapis.com/token";
 const clientSecret = "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";
 const refreshToken =
   "1//05gP-BaXmwmfWCgYIARAAGAUSNwF-L9Ir5GAfhIcjtsWfxNZUoz51Yr0bAWnDRzwZZC5rxymgrPNEQMeRZu5QiL_7rRSqfDfBaiU";
+const weatherEndpoint =
+  "https://api.weather.gov/gridpoints/SEW/124,69/forecast/hourly";
 
-function setDateAndTime() {
+async function setDateAndTime() {
   const time = document.getElementById("time");
   time.textContent = new Date().toLocaleTimeString("en-US", {
     timeStyle: "short",
@@ -23,6 +25,20 @@ function setDateAndTime() {
     day: `numeric`,
     year: `numeric`,
   });
+
+  const weatherResponse = await fetch(weatherEndpoint);
+  const weatherData = await weatherResponse.json();
+  const weatherPeriods = weatherData.properties.periods;
+  const period = weatherPeriods.find((period) => {
+    const startTime = new Date(period.startTime).getTime();
+    const endTime = new Date(period.endTime).getTime();
+    const now = Date.now();
+
+    return now >= startTime && now <= endTime;
+  });
+
+  const tempertureElement = document.getElementById("temperature");
+  tempertureElement.textContent = `${period.temperature} °F`;
 }
 
 setDateAndTime();
