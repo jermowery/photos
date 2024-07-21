@@ -191,6 +191,10 @@ setInterval(() => {
   updatePhoto();
 }, 1000 * 60 * 3);
 
+document.getElementById("image").addEventListener("click", async () => {
+  await updatePhoto();
+});
+
 async function getPhoto(id) {
   const accessToken = await getAccessToken();
   const photoResponse = await fetch(
