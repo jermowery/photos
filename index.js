@@ -191,8 +191,8 @@ setInterval(() => {
   updatePhoto();
 }, 1000 * 60 * 3);
 
-document.getElementById("image").addEventListener("click", async () => {
-  await updatePhoto();
+document.getElementById("image").addEventListener("click", () => {
+  updatePhoto();
 });
 
 async function getPhoto(id) {
