@@ -2,17 +2,30 @@
   <head> </head>
   <body
     style="
-      width: 100vh;
+      width: 100vw;
       height: 100vh;
       margin: 0;
       background-position: center;
       background-repeat: no-repeat;
       transition: background-image 1s ease-in-out;
       background-color: black;
-      background-size: contain;
+      background-size: cover;
     "
   >
     <progress id="progress-bar" style="width: 100%"></progress>
+    <div
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        backdrop-filter: blur(10px);
+      "
+    >
+      <img id="image" />
+    </div>
     <div
       style="
         position: absolute;
