@@ -178,6 +178,7 @@ async function updatePhoto() {
     photoCameraInfoElement.textContent = photoInfo;
 
     document.head.removeChild(preloadLink);
+    document.getElementById("progress-bar").style.display = "none";
   });
 }
 
