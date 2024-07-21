@@ -148,7 +148,7 @@ async function updatePhoto() {
     setTimeout(() => {
       imageElement.src = url;
       imageElement.style.opacity = 1;
-    }, 1000);
+    }, 2000);
 
     const photoDate = new Date(photo.mediaMetadata.creationTime);
     const photoDateElement = document.getElementById("photo-date");
