@@ -145,10 +145,10 @@ async function updatePhoto() {
     document.body.style.backgroundImage = `url(${url})`;
     const imageElement = document.getElementById("image");
     imageElement.style.opacity = 0;
-    imageElement.src = url;
-    imageElement.addEventListener("load", () => {
+    setTimeout(() => {
+      imageElement.src = url;
       imageElement.style.opacity = 1;
-    });
+    }, 1000);
 
     const photoDate = new Date(photo.mediaMetadata.creationTime);
     const photoDateElement = document.getElementById("photo-date");
