@@ -11,6 +11,8 @@ const refreshToken =
   "1//05gP-BaXmwmfWCgYIARAAGAUSNwF-L9Ir5GAfhIcjtsWfxNZUoz51Yr0bAWnDRzwZZC5rxymgrPNEQMeRZu5QiL_7rRSqfDfBaiU";
 const weatherEndpoint =
   "https://api.weather.gov/gridpoints/SEW/124,69/forecast/hourly";
+const airQualityEndpoint =
+  "https://www.airnowapi.org/aq/observation/zipCode/current/?format=application/json&zipCode=98109&distance=25&API_KEY=023C7554-7950-48FC-806C-28F20B534CFD";
 
 async function setDateAndTime() {
   const time = document.getElementById("time");
@@ -26,7 +28,10 @@ async function setDateAndTime() {
     year: `numeric`,
   });
 
-  const weatherResponse = await fetch(weatherEndpoint);
+  const airQualityResponsePromise = fetch(airQualityEndpoint);
+
+  const weatherResponsePromise = fetch(weatherEndpoint);
+  const weatherResponse = await weatherResponsePromise;
   const weatherData = await weatherResponse.json();
   const weatherPeriods = weatherData.properties.periods;
   const period = weatherPeriods.find((period) => {
@@ -41,6 +46,37 @@ async function setDateAndTime() {
   tempertureElement.textContent = `${period.temperature}°F, ${period.shortForecast}`;
   const tempertureIconElement = document.getElementById("temperature-icon");
   tempertureIconElement.src = period.icon;
+
+  const airQualityResponse = await airQualityResponsePromise;
+  const airQualityData = await airQualityResponse.json();
+  const { AQI, Category } = airQualityData.find(
+    (data) => data.ParameterName === "PM2.5"
+  );
+  const airQualityName = Category.Name;
+  let airQualityIcon = "🟢";
+  switch (airQualityName) {
+    case "Good":
+      airQualityIcon = "🟢";
+      break;
+    case "Moderate":
+      airQualityIcon = "🟡";
+      break;
+    case "Unhealthy for Sensitive Groups":
+      airQualityIcon = "🟠";
+      break;
+    case "Unhealthy":
+      airQualityIcon = "🔴";
+      break;
+    case "Very Unhealthy":
+      airQualityIcon = "🟣";
+      break;
+    case "Hazardous":
+      airQualityIcon = "⚫";
+      break;
+  }
+
+  const airQualityElement = document.getElementById("air-quality");
+  airQualityElement.textContent = `AQI: ${airQualityIcon} ${AQI} (${airQualityName})`;
 }
 
 setDateAndTime();
@@ -245,7 +281,6 @@ async function addPhotos(photos, nextPageToken) {
   const results = await searchResponse.json();
 
   if (!results.mediaItems) {
-    console.error("Unexpected result value", results);
     return;
   }
 
