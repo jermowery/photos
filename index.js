@@ -43,7 +43,7 @@ async function setDateAndTime() {
   });
 
   const tempertureElement = document.getElementById("temperature");
-  tempertureElement.textContent = `${period.temperature}°F, ${period.shortForecast}`;
+  tempertureElement.innerHTML = `&nbsp;${period.temperature}°F, ${period.shortForecast}`;
   const tempertureIconElement = document.getElementById("temperature-icon");
   tempertureIconElement.src = period.icon;
 
@@ -76,7 +76,7 @@ async function setDateAndTime() {
   }
 
   const airQualityElement = document.getElementById("air-quality");
-  airQualityElement.textContent = `AQI: ${airQualityIcon} ${AQI} (${airQualityName})`;
+  airQualityElement.textContent = `${airQualityIcon} ${AQI} AQI, ${airQualityName}`;
 }
 
 setDateAndTime();

@@ -1,6 +1,59 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .lora-display-large {
+        font-family: "Lora", serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 57pt;
+        letter-spacing: -0.25pt;
+        line-height: 64pt;
+      }
+      .lora-display-medium {
+        font-family: "Lora", serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 45pt;
+        letter-spacing: 0;
+        line-height: 52pt;
+      }
+      .lora-display-small {
+        font-family: "Lora", serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 36pt;
+        letter-spacing: 0;
+        line-height: 44pt;
+      }
+      .lora-headline-small {
+        font-family: "Lora", serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 24pt;
+        letter-spacing: 0;
+        line-height: 32pt;
+      }
+      .lora-body-large {
+        font-family: "Lora", serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 16pt;
+        letter-spacing: 0.5pt;
+        line-height: 24pt;
+      }
+    </style>
   </head>
   <body
     style="
@@ -38,15 +91,34 @@
         padding: 8px;
         border-radius: 8px;
         border: white 1px solid;
+        text-align: end;
       "
     >
-      <div id="time" style="font-size: xxx-large"></div>
-      <div id="date" style="font-size: xxx-large"></div>
-      <div style="display: flex; gap: 16px; align-items: center">
-        <img id="temperature-icon" src="" />
-        <div id="temperature" style="font-size: xxx-large"></div>
+      <div
+        style="
+          display: flex;
+          gap: 16px;
+          justify-content: end;
+          align-items: center;
+        "
+      >
+        <div
+          id="time"
+          class="lora-display-large"
+          style="display: inline-block"
+        ></div>
+        <div
+          style="display: inline-flex; flex-direction: column"
+          class="lora-display-small"
+        >
+          <div style="display: inline-flex; align-items: center">
+            <img id="temperature-icon" height="42px" width="42px" src="" />
+            <div id="temperature" class="lora-headline-small"></div>
+          </div>
+          <div id="air-quality" class="lora-headline-small"></div>
+        </div>
       </div>
-      <div id="air-quality" style="font-size: xxx-large"></div>
+      <div id="date" class="lora-display-small"></div>
     </div>
     <div
       style="
@@ -60,10 +132,10 @@
         border: white 1px solid;
       "
     >
-      <div id="photo-description" style="font-size: x-large"></div>
-      <div id="photo-author" style="font-size: x-large"></div>
-      <div id="photo-date" style="font-size: x-large"></div>
-      <div id="photo-camera-info" style="font-size: x-large"></div>
+      <div id="photo-description" class="lora-body-large"></div>
+      <div id="photo-author" class="lora-body-large"></div>
+      <div id="photo-date" class="lora-body-large"></div>
+      <div id="photo-camera-info" class="lora-body-large"></div>
     </div>
     <script src="index.js"></script>
   </body>
