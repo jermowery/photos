@@ -161,12 +161,13 @@ const searchUrl = "https://photoslibrary.googleapis.com/v1/mediaItems:search";
 async function updatePhoto() {
   const now = Date.now();
   const cacheExpirationTime = Number(localStorage.getItem("cacheExpiration"));
-  if (now > cacheExpirationTime) {
+  let photosRaw = localStorage.getItem("photos");
+  if (now > cacheExpirationTime || !photosRaw) {
     await setupPhotosCache();
     localStorage.setItem("cacheExpiration", String(now + 1000 * 60 * 60 * 24));
   }
 
-  const photosRaw = localStorage.getItem("photos");
+  photosRaw = localStorage.getItem("photos");
 
   if (!photosRaw) {
     console.error("No photos found!");
