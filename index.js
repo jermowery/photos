@@ -13,6 +13,29 @@ const weatherEndpoint =
   "https://api.weather.gov/gridpoints/SEW/124,69/forecast/hourly";
 const airQualityEndpoint =
   "https://www.airnowapi.org/aq/observation/zipCode/current/?format=application/json&zipCode=98109&distance=25&API_KEY=023C7554-7950-48FC-806C-28F20B534CFD";
+const consoleOutputElement = document.getElementById('console-output');
+
+const originalConsoleLog = console.log;
+
+console.log = (message) => {
+  originalConsoleLog(message);
+  consoleOutputElement.innerHTML += `INFO: ${message}<br/>`;
+}
+
+const originalConsoleError = console.error;
+
+console.error = (message) => {
+  originalConsoleError(message);
+  consoleOutputElement.innerHTML += `ERROR: ${message}<br/>`;
+}
+
+const originalConsoleWarn = console.warn;
+
+console.warn = (message) => {
+  originalConsoleWarn(message);
+  consoleOutputElement.innerHTML += `WARNING: ${message}<br/>`;
+}
+
 
 async function setDateAndTime() {
   const time = document.getElementById("time");
