@@ -32,7 +32,9 @@ async function setDateAndTime() {
   });
 
   const tempertureElement = document.getElementById("temperature");
-  tempertureElement.innerHTML = `&nbsp;${period.temperature}°F, ${period.shortForecast}`;
+  tempertureElement.innerHTML = `&nbsp;${period.temperature}°F/${Math.round(
+    (period.temperature - 32) * (5 / 9)
+  )}°C, ${period.shortForecast}`;
   const tempertureIconElement = document.getElementById("temperature-icon");
   tempertureIconElement.src = period.icon;
 
