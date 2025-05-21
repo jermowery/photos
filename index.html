@@ -13,45 +13,45 @@
         font-optical-sizing: auto;
         font-weight: 400;
         font-style: normal;
-        font-size: 57pt;
+        font-size: 128pt;
         letter-spacing: -0.25pt;
-        line-height: 64pt;
+        line-height: 128pt;
       }
       .lora-display-medium {
         font-family: "Lora", serif;
         font-optical-sizing: auto;
         font-weight: 400;
         font-style: normal;
-        font-size: 45pt;
+        font-size: 104pt;
         letter-spacing: 0;
-        line-height: 52pt;
+        line-height: 104pt;
       }
       .lora-display-small {
         font-family: "Lora", serif;
         font-optical-sizing: auto;
         font-weight: 400;
         font-style: normal;
-        font-size: 36pt;
+        font-size: 88pt;
         letter-spacing: 0;
-        line-height: 44pt;
+        line-height: 88pt;
       }
       .lora-headline-small {
         font-family: "Lora", serif;
         font-optical-sizing: auto;
         font-weight: 400;
         font-style: normal;
-        font-size: 24pt;
+        font-size: 64pt;
         letter-spacing: 0;
-        line-height: 32pt;
+        line-height: 64pt;
       }
       .lora-body-large {
         font-family: "Lora", serif;
         font-optical-sizing: auto;
         font-weight: 400;
         font-style: normal;
-        font-size: 16pt;
+        font-size: 48pt;
         letter-spacing: 0.5pt;
-        line-height: 24pt;
+        line-height: 48pt;
       }
     </style>
   </head>
@@ -83,7 +83,7 @@
         style="
           display: flex;
           gap: 16px;
-          justify-content: end;
+          flex-direction: column;
           align-items: center;
         "
       >
@@ -93,17 +93,16 @@
           style="display: inline-block"
         ></div>
         <div
-          style="display: inline-flex; flex-direction: column"
+          id="date"
           class="lora-display-small"
-        >
-          <div style="display: inline-flex; align-items: center">
-            <img id="temperature-icon" height="42px" width="42px" src="" />
-            <div id="temperature" class="lora-headline-small"></div>
-          </div>
-          <div id="air-quality" class="lora-headline-small"></div>
+          style="margin-bottom: 1rem"
+        ></div>
+        <div style="display: inline-flex; align-items: center">
+          <img id="temperature-icon" height="64px" width="64px" src="" />
+          <div id="temperature" class="lora-headline-small"></div>
         </div>
+        <div id="air-quality" class="lora-headline-small"></div>
       </div>
-      <div id="date" class="lora-display-small"></div>
     </div>
     <script src="index.js"></script>
   </body>
