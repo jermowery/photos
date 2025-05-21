@@ -62,25 +62,10 @@
       margin: 0;
       background-position: center;
       background-repeat: no-repeat;
-      transition: background-image 1s ease-in-out 1s;
       background-color: black;
       background-size: cover;
     "
   >
-    <progress id="progress-bar" style="width: 100%"></progress>
-    <div
-      style="
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        width: 100%;
-        box-sizing: border-box;
-        backdrop-filter: blur(50px);
-      "
-    >
-      <img id="image" style="transition: opacity 1s ease-in-out 1s" />
-    </div>
     <div
       style="
         position: absolute;
@@ -119,23 +104,6 @@
         </div>
       </div>
       <div id="date" class="lora-display-small"></div>
-    </div>
-    <div
-      style="
-        position: absolute;
-        left: 24px;
-        bottom: 24px;
-        color: white;
-        background-color: rgba(0, 0, 0, 0.5);
-        padding: 8px;
-        border-radius: 8px;
-        border: white 1px solid;
-      "
-    >
-      <div id="photo-description" class="lora-body-large"></div>
-      <div id="photo-author" class="lora-body-large"></div>
-      <div id="photo-date" class="lora-body-large"></div>
-      <div id="photo-camera-info" class="lora-body-large"></div>
     </div>
     <script src="index.js"></script>
   </body>
