@@ -61,7 +61,7 @@
       width: 100vw;
       height: 100vh;
       margin: 0;
-      background-image: url('/photos/image.webp');
+      background-image: url('image.webp');
       background-position: center;
       background-repeat: no-repeat;
       background-color: black;
@@ -69,6 +69,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
     "
   >
     <div
@@ -104,6 +105,25 @@
           <div id="temperature" class="lora-headline-small"></div>
         </div>
         <div id="air-quality" class="lora-headline-small"></div>
+        <!-- TradingView Widget BEGIN -->
+        <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <div class="tradingview-widget-copyright"></div>
+          <script
+            type="text/javascript"
+            src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js"
+            async
+          >
+              {
+              "symbol": "NASDAQ:GOOG",
+              "width": 350,
+              "isTransparent": false,
+              "colorTheme": "dark",
+              "locale": "en"
+            }
+          </script>
+        </div>
+        <!-- TradingView Widget END -->
       </div>
     </div>
     <script src="index.js"></script>
