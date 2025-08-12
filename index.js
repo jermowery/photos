@@ -55,3 +55,7 @@ setDateAndTime();
 setInterval(() => {
   setDateAndTime();
 }, 1000 * 60);
+
+setInterval(() => {
+  window.location.reload();
+}, 1000 * 60 * 15);
