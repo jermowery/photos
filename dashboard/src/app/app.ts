@@ -23,13 +23,11 @@ export class App {
   });
   protected readonly backgroundImageUrl = computed<string | null>(() => {
     if (!this.randomUnsplashImage.hasValue()) {
-      console.error('no value');
       return null;
     }
     const response = this.randomUnsplashImage.value().response;
     const image = Array.isArray(response) ? response[0] : response;
     if (!image) {
-      console.error('no image');
       return null;
     }
     return image.urls.full;
