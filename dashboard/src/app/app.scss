@@ -6,9 +6,10 @@
   box-sizing: border-box;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: max-content max-content;
   gap: 1rem 1rem;
   padding: 1rem;
+  align-content: space-between;
 }
 
 .data-container {
@@ -25,4 +26,25 @@
 }
 .display-small {
   font: var(--mat-sys-display-small);
+}
+.weather-icon-and-temp {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.display-small {
+  font: var(--mat-sys-display-small);
+}
+
+.weather-details-table {
+  td,
+  th {
+    text-align: start;
+  }
+  th {
+    padding-inline-end: 2rem;
+  }
+}
+p {
+  margin: 0;
 }
