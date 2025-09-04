@@ -1,1 +1,9 @@
-<div [style.background-image]="'url(' + backgroundImageUrl() + ')'" class="dashboard-root"></div>
+<div [style.background-image]="'url(' + backgroundImageUrl() + ')'" class="dashboard-root">
+  <div class="data-container">
+    <p class="display-large">{{ currentDate() | date: 'shortTime' }}</p>
+    <p class="display-small">{{ currentDate() | date: 'fullDate' }}</p>
+  </div>
+  <div class="data-container"></div>
+  <div class="data-container"></div>
+  <div class="data-container"></div>
+</div>

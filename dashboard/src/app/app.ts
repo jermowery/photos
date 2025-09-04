@@ -1,4 +1,7 @@
+import { DatePipe } from '@angular/common';
 import { Component, computed, resource, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { interval, map } from 'rxjs';
 import { createApi } from 'unsplash-js';
 
 const unsplashApi = createApi({
@@ -9,6 +12,7 @@ const unsplashApi = createApi({
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
+  imports: [DatePipe],
 })
 export class App {
   protected readonly title = signal('dashboard');
@@ -30,6 +34,9 @@ export class App {
     if (!image) {
       return null;
     }
-    return image.urls.full;
+    return image.urls.regular;
+  });
+  protected readonly currentDate = toSignal(interval(1_000 * 60).pipe(map(() => new Date())), {
+    initialValue: new Date(),
   });
 }

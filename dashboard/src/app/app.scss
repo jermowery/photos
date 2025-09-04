@@ -4,4 +4,25 @@
   background-size: cover;
   background-position: center;
   box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1rem 1rem;
+  padding: 1rem;
+}
+
+.data-container {
+  background: rgba(from var(--mat-sys-surface-container-highest) r g b / 66%);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.display-large {
+  font: var(--mat-sys-display-large);
+}
+.display-medium {
+  font: var(--mat-sys-display-medium);
+}
+.display-small {
+  font: var(--mat-sys-display-small);
 }
