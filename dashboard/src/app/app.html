@@ -38,6 +38,21 @@
       ></mat-progress-spinner>
     }
   </div>
-  <div class="data-container"></div>
-  <div class="data-container"></div>
+  <div class="data-container">
+    @if (currentAirQuality.hasValue()) {
+      <div class="air-quality">
+        <p class="display-large">
+          {{ aqiCategoryIcon() }} {{ aqi() }} <span>({{ aqiParameter() }})</span>
+        </p>
+        <p class="display-small">{{ aqiCategory() }}</p>
+      </div>
+    } @else {
+      <mat-progress-spinner
+        mode="indeterminate"
+        aria-label="Loading air quality data..."
+      ></mat-progress-spinner>
+    }
+  </div>
+  <div class="data-container">
+  </div>
 </div>

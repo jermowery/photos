@@ -1,6 +1,6 @@
 import { DatePipe, DecimalPipe, JsonPipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
-import { Component, computed, resource } from '@angular/core';
+import { Component, computed, resource, OnDestroy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { interval, map } from 'rxjs';
@@ -31,13 +31,23 @@ const currentWeatherResponseSchema = z.object({
   }),
 });
 
+const currentAirQualityResponseSchema = z.array(
+  z.object({
+    ParameterName: z.string(),
+    AQI: z.number(),
+    Category: z.object({
+      Name: z.string(),
+    }),
+  }),
+);
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
   imports: [DatePipe, MatProgressSpinner, JsonPipe, DecimalPipe],
 })
-export class App {
+export class App implements OnDestroy {
   private readonly repeatEveryMinute = toSignal(interval(1_000 * 60));
   private readonly randomUnsplashImage = resource({
     loader: async () =>
@@ -63,18 +73,77 @@ export class App {
     initialValue: new Date(),
   });
   protected readonly currentWeather = httpResource(
-    () => {
-      return `https://api.openweathermap.org/data/2.5/weather?lat=47.6208447&lon=-122.3457759&appid=${OPEN_WEATHER_MAP_API_KEY}&units=imperial`;
-    },
+    () =>
+      'https://api.openweathermap.org/data/2.5/weather?lat=47.6208447&lon=-122.3457759' +
+      `&appid=${OPEN_WEATHER_MAP_API_KEY}&units=imperial`,
     { parse: currentWeatherResponseSchema.parse },
   );
-
-  constructor() {
-    setInterval(
-      () => {
-        this.currentWeather.reload();
-      },
-      1_000 * 60 * 10,
+  protected readonly currentAirQuality = httpResource(
+    () =>
+      'https://www.airnowapi.org/aq/observation/zipCode/current/?format=application/json' +
+      '&zipCode=98109&distance=25&API_KEY=023C7554-7950-48FC-806C-28F20B534CFD',
+    { parse: currentAirQualityResponseSchema.parse },
+  );
+  private readonly highestAqiAndCategory = computed(() => {
+    if (!this.currentAirQuality.hasValue()) {
+      return null;
+    }
+    const observations = this.currentAirQuality.value();
+    if (observations.length === 0) {
+      return null;
+    }
+    // Find the observation with the highest AQI
+    const observation = observations.reduce((prev, current) =>
+      prev.AQI > current.AQI ? prev : current,
     );
+    return {
+      aqi: observation.AQI,
+      category: observation.Category.Name,
+      parameter: observation.ParameterName,
+    };
+  });
+  protected readonly aqiParameter = computed(() => {
+    return this.highestAqiAndCategory()?.parameter ?? 'N/A';
+  });
+  protected readonly aqiCategory = computed(() => {
+    return this.highestAqiAndCategory()?.category ?? 'Good';
+  });
+  protected readonly aqiCategoryIcon = computed(() => {
+    const category = this.aqiCategory();
+    let airQualityIcon = '🟢';
+    switch (category) {
+      case 'Good':
+        airQualityIcon = '🟢';
+        break;
+      case 'Moderate':
+        airQualityIcon = '🟡';
+        break;
+      case 'Unhealthy for Sensitive Groups':
+        airQualityIcon = '🟠';
+        break;
+      case 'Unhealthy':
+        airQualityIcon = '🔴';
+        break;
+      case 'Very Unhealthy':
+        airQualityIcon = '🟣';
+        break;
+      case 'Hazardous':
+        airQualityIcon = '⚫';
+        break;
+    }
+    return airQualityIcon;
+  });
+  protected readonly aqi = computed(() => this.highestAqiAndCategory()?.aqi ?? 0);
+
+  private readonly intervalId = setInterval(
+    () => {
+      this.currentWeather.reload();
+      this.currentAirQuality.reload();
+    },
+    1_000 * 60 * 10, // every 10 minutes
+  );
+
+  ngOnDestroy() {
+    clearInterval(this.intervalId);
   }
 }
