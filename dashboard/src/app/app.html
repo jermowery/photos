@@ -1,0 +1,58 @@
+<div [style.background-image]="'url(' + backgroundImageUrl() + ')'" class="dashboard-root">
+  <div class="data-container">
+    <p class="display-large">{{ currentDate() | date: 'shortTime' }}</p>
+    <p class="display-small">{{ currentDate() | date: 'fullDate' }}</p>
+  </div>
+  <div class="data-container">
+    @if (currentWeather.hasValue()) {
+      @let weather = currentWeather.value().weather[0];
+      <div class="weather-icon-and-temp">
+        <img
+          [src]="'http://openweathermap.org/img/wn/' + weather.icon + '@2x.png'"
+          [alt]="weather.description"
+        />
+        <span class="display-large"
+          >{{ currentWeather.value().main.temp | number: '1.0-0' }}°F</span
+        >
+      </div>
+      <div class="weather-details">
+        <table class="weather-details-table">
+          <tr>
+            <th class="display-small" scope="row">Humidity:</th>
+            <td class="display-small">
+              {{ currentWeather.value().main.humidity | number: '1.0-0' }}%
+            </td>
+          </tr>
+          <tr>
+            <th class="display-small" scope="row">Wind Speed:</th>
+            <td class="display-small">
+              {{ currentWeather.value().wind.speed | number: '1.0-0' }} mph
+            </td>
+          </tr>
+        </table>
+      </div>
+    } @else {
+      <mat-progress-spinner
+        mode="indeterminate"
+        aria-label="Loading weather data..."
+      ></mat-progress-spinner>
+    }
+  </div>
+  <div class="data-container">
+    @if (currentAirQuality.hasValue()) {
+      <div class="air-quality">
+        <p class="display-large">
+          {{ aqiCategoryIcon() }} {{ aqi() }} <span>({{ aqiParameter() }})</span>
+        </p>
+        <p class="display-small">{{ aqiCategory() }}</p>
+      </div>
+    } @else {
+      <mat-progress-spinner
+        mode="indeterminate"
+        aria-label="Loading air quality data..."
+      ></mat-progress-spinner>
+    }
+  </div>
+  <div class="data-container">
+  </div>
+</div>
