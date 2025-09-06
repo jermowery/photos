@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe, JsonPipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
 import { Component, computed, resource, OnDestroy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -45,7 +45,7 @@ const currentAirQualityResponseSchema = z.array(
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  imports: [DatePipe, MatProgressSpinner, JsonPipe, DecimalPipe],
+  imports: [DatePipe, MatProgressSpinner, DecimalPipe],
 })
 export class App implements OnDestroy {
   private readonly repeatEveryMinute = toSignal(interval(1_000 * 60));
