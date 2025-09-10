@@ -8,6 +8,7 @@
       @let weather = currentWeather.value().weather[0];
       <div class="weather-icon-and-temp">
         <img
+          class="weather-icon"
           [src]="'http://openweathermap.org/img/wn/' + weather.icon + '@2x.png'"
           [alt]="weather.description"
         />
@@ -53,6 +54,5 @@
       ></mat-progress-spinner>
     }
   </div>
-  <div class="data-container">
-  </div>
+  <div class="data-container"></div>
 </div>
