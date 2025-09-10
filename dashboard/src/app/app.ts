@@ -52,10 +52,9 @@ export class App implements OnDestroy {
   private readonly randomUnsplashImage = resource({
     loader: async () =>
       await unsplashApi.photos.getRandom({
-        query: 'cute animals',
         count: 1,
-        contentFilter: 'high',
         orientation: 'landscape',
+        collectionIds: ['bofgKPsR7eg'], // Cute animals
       }),
   });
   protected readonly backgroundImageUrl = computed<string | null>(() => {
