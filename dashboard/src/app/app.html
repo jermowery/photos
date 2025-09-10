@@ -59,7 +59,7 @@
     @if (metadata) {
       @if (metadata.location) {
         <span class="display-small photo-metadata-icon"
-          ><mat-icon inline>location_on</mat-icon></span
+          ><mat-icon inline class="bigger-icon">location_on</mat-icon></span
         >
         <p class="display-small photo-metadata-text">
           {{ metadata.location }}
@@ -74,7 +74,9 @@
       <p class="headline-large photo-metadata-text">
         {{ metadata.authorName }}
       </p>
-      <span class="display-small photo-metadata-icon"><mat-icon inline>camera</mat-icon></span>
+      <span class="display-small photo-metadata-icon"
+        ><mat-icon inline class="bigger-icon">camera</mat-icon></span
+      >
       <p class="headline-medium photo-metadata-text">
         {{ metadata.exif }}
       </p>

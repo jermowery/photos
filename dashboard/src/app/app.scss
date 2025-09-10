@@ -80,7 +80,13 @@ p {
 }
 .photo-metadata-icon {
   align-self: start;
+  justify-self: center;
 }
 .photo-metadata-text {
   align-self: center;
+}
+
+.bigger-icon {
+  width: 64px;
+  height: 64px;
 }
