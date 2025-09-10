@@ -54,5 +54,35 @@
       ></mat-progress-spinner>
     }
   </div>
-  <div class="data-container"></div>
+  <div class="data-container photo-metadata">
+    @let metadata = backgroundImageMetdata();
+    @if (metadata) {
+      @if (metadata.location) {
+        <span class="display-small photo-metadata-icon"
+          ><mat-icon inline>location_on</mat-icon></span
+        >
+        <p class="display-small photo-metadata-text">
+          {{ metadata.location }}
+        </p>
+      }
+      <img
+        class="photographer-avatar photo-metadata-icon"
+        [src]="metadata.authorProfileImageUrl"
+        alt=""
+        role="presentation"
+      />
+      <p class="headline-large photo-metadata-text">
+        {{ metadata.authorName }}
+      </p>
+      <span class="display-small photo-metadata-icon"><mat-icon inline>camera</mat-icon></span>
+      <p class="headline-medium photo-metadata-text">
+        {{ metadata.exif }}
+      </p>
+    } @else {
+      <mat-progress-spinner
+        mode="indeterminate"
+        aria-label="Loading background image metadata..."
+      ></mat-progress-spinner>
+    }
+  </div>
 </div>

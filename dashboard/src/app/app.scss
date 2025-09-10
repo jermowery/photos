@@ -36,6 +36,12 @@
   letter-spacing: var(--mat-sys-display-small-tracking);
   font-weight: var(--mat-sys-display-small-weight);
 }
+.headline-large {
+  font: var(--mat-sys-headline-large);
+}
+.headline-medium {
+  font: var(--mat-sys-headline-medium);
+}
 .weather-icon-and-temp {
   display: flex;
   align-items: center;
@@ -57,4 +63,24 @@ p {
 .weather-icon {
   height: calc(var(--mat-sys-display-large-size) * 1.5);
   width: auto;
+}
+.photographer-avatar {
+  border-radius: 50%;
+}
+.photographer-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.photo-metadata {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  grid-template-rows: min-content min-content min-content;
+  gap: 1rem;
+}
+.photo-metadata-icon {
+  align-self: start;
+}
+.photo-metadata-text {
+  align-self: center;
 }

@@ -2,6 +2,7 @@ import { DatePipe, DecimalPipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
 import { Component, computed, resource, OnDestroy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { interval, map } from 'rxjs';
 import { createApi } from 'unsplash-js';
@@ -45,11 +46,11 @@ const currentAirQualityResponseSchema = z.array(
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  imports: [DatePipe, MatProgressSpinner, DecimalPipe],
+  imports: [DatePipe, MatProgressSpinner, DecimalPipe, MatIcon],
 })
 export class App implements OnDestroy {
   private readonly repeatEveryMinute = toSignal(interval(1_000 * 60));
-  private readonly randomUnsplashImage = resource({
+  private readonly randomUnsplashImageResponse = resource({
     loader: async () =>
       await unsplashApi.photos.getRandom({
         count: 1,
@@ -57,16 +58,57 @@ export class App implements OnDestroy {
         collectionIds: ['bofgKPsR7eg'], // Cute animals
       }),
   });
-  protected readonly backgroundImageUrl = computed<string | null>(() => {
-    if (!this.randomUnsplashImage.hasValue()) {
+  private readonly randomUnsplashImage = computed(() => {
+    if (!this.randomUnsplashImageResponse.hasValue()) {
       return null;
     }
-    const response = this.randomUnsplashImage.value().response;
+    const response = this.randomUnsplashImageResponse.value().response;
     const image = Array.isArray(response) ? response[0] : response;
+    return image ?? null;
+  });
+  protected readonly backgroundImageUrl = computed<string | null>(() => {
+    const image = this.randomUnsplashImage();
     if (!image) {
       return null;
     }
-    return image.urls.regular;
+    const url = new URL(image.urls.raw); // Validate URL
+    url.searchParams.set('w', '1920');
+    url.searchParams.set('h', '1080');
+    url.searchParams.set('fit', 'crop');
+    url.searchParams.set('fm', 'webp');
+    return url.toString();
+  });
+  protected readonly backgroundImageMetdata = computed(() => {
+    const image = this.randomUnsplashImage();
+    if (!image) {
+      return null;
+    }
+    const exifParts: string[] = [];
+    if (image.exif.make) {
+      exifParts.push(image.exif.make);
+      if (image.exif.model) {
+        exifParts.push(image.exif.model);
+      }
+    }
+    if (image.exif.focal_length) {
+      exifParts.push(`${image.exif.focal_length}mm`);
+    }
+    if (image.exif.aperture) {
+      exifParts.push(`ƒ/${image.exif.aperture}`);
+    }
+    if (image.exif.exposure_time) {
+      exifParts.push(`${image.exif.exposure_time}s`);
+    }
+    if (image.exif.iso) {
+      exifParts.push(`ISO ${image.exif.iso}`);
+    }
+    return {
+      description: image.alt_description,
+      authorName: image.user.name,
+      authorProfileImageUrl: image.user.profile_image.medium,
+      location: image.location.name,
+      exif: exifParts.join(', '),
+    };
   });
   protected readonly currentDate = toSignal(interval(1_000 * 60).pipe(map(() => new Date())), {
     initialValue: new Date(),
