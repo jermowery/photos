@@ -7,7 +7,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: max-content max-content;
-  gap: 1rem 1rem;
+  gap: 25% 25%;
   padding: 1rem;
   align-content: space-between;
 }
@@ -16,6 +16,7 @@
   background: rgba(from var(--mat-sys-surface-container-highest) r g b / 66%);
   border-radius: 8px;
   padding: 1rem;
+  border: 1px solid var(--mat-sys-outline);
 }
 
 .display-large {
@@ -63,6 +64,8 @@ p {
 .weather-icon {
   height: calc(var(--mat-sys-display-large-size) * 1.5);
   width: auto;
+  background-color: var(--mat-sys-surface-container-lowest);
+  border-radius: 50%;
 }
 .photographer-avatar {
   border-radius: 50%;
@@ -89,4 +92,7 @@ p {
 .bigger-icon {
   width: 64px;
   height: 64px;
+  font-size: 64px;
+  line-height: 64px;
+  vertical-align: middle;
 }

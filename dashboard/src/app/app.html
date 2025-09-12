@@ -59,7 +59,7 @@
     @if (metadata) {
       @if (metadata.location) {
         <span class="display-small photo-metadata-icon"
-          ><mat-icon inline class="bigger-icon">location_on</mat-icon></span
+          ><mat-icon class="bigger-icon">location_on</mat-icon></span
         >
         <p class="display-small photo-metadata-text">
           {{ metadata.location }}
@@ -74,12 +74,14 @@
       <p class="headline-large photo-metadata-text">
         {{ metadata.authorName }}
       </p>
-      <span class="display-small photo-metadata-icon"
-        ><mat-icon inline class="bigger-icon">camera</mat-icon></span
-      >
-      <p class="headline-medium photo-metadata-text">
-        {{ metadata.exif }}
-      </p>
+      @if (metadata.exif) {
+        <span class="display-small photo-metadata-icon"
+          ><mat-icon class="bigger-icon">camera</mat-icon></span
+        >
+        <p class="headline-medium photo-metadata-text">
+          {{ metadata.exif }}
+        </p>
+      }
     } @else {
       <mat-progress-spinner
         mode="indeterminate"

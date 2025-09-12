@@ -106,8 +106,8 @@ export class App implements OnDestroy {
       description: image.alt_description,
       authorName: image.user.name,
       authorProfileImageUrl: image.user.profile_image.medium,
-      location: image.location.name,
-      exif: exifParts.join(', '),
+      location: image.location.city,
+      exif: exifParts.length > 0 ? exifParts.join(', ') : null,
     };
   });
   protected readonly currentDate = toSignal(interval(1_000 * 60).pipe(map(() => new Date())), {
