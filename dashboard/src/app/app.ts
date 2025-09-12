@@ -49,7 +49,6 @@ const currentAirQualityResponseSchema = z.array(
   imports: [DatePipe, MatProgressSpinner, DecimalPipe, MatIcon],
 })
 export class App implements OnDestroy {
-  private readonly repeatEveryMinute = toSignal(interval(1_000 * 60));
   private readonly randomUnsplashImageResponse = resource({
     loader: async () =>
       await unsplashApi.photos.getRandom({
@@ -186,5 +185,9 @@ export class App implements OnDestroy {
 
   ngOnDestroy() {
     clearInterval(this.intervalId);
+  }
+
+  protected reloadPhoto() {
+    this.randomUnsplashImageResponse.reload();
   }
 }

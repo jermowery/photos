@@ -1,4 +1,11 @@
-<div [style.background-image]="'url(' + backgroundImageUrl() + ')'" class="dashboard-root">
+<div
+  [style.background-image]="'url(' + backgroundImageUrl() + ')'"
+  class="dashboard-root"
+  tabindex="0"
+  (click)="reloadPhoto()"
+  (keyup.enter)="reloadPhoto()"
+  (keydown.enter)="reloadPhoto()"
+>
   <div class="data-container">
     <p class="display-large">{{ currentDate() | date: 'shortTime' }}</p>
     <p class="display-small">{{ currentDate() | date: 'fullDate' }}</p>
