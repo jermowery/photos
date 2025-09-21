@@ -1,8 +1,9 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
-import { Component, computed, resource, OnDestroy } from '@angular/core';
+import { Component, computed, resource, OnDestroy, linkedSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
+import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { interval, map } from 'rxjs';
 import { createApi } from 'unsplash-js';
@@ -46,39 +47,49 @@ const currentAirQualityResponseSchema = z.array(
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  imports: [DatePipe, MatProgressSpinner, DecimalPipe, MatIcon],
+  imports: [DatePipe, MatProgressSpinner, DecimalPipe, MatIcon, MatProgressBar],
 })
 export class App implements OnDestroy {
-  private readonly randomUnsplashImageResponse = resource({
-    loader: async () =>
-      await unsplashApi.photos.getRandom({
+  private readonly randomUnsplashImage = resource({
+    loader: async () => {
+      const { response } = await unsplashApi.photos.getRandom({
         count: 1,
         orientation: 'landscape',
         collectionIds: ['bofgKPsR7eg'], // Cute animals
-      }),
+      });
+      const image = Array.isArray(response) ? response[0] : response;
+      return image ?? null;
+    },
   });
-  private readonly randomUnsplashImage = computed(() => {
-    if (!this.randomUnsplashImageResponse.hasValue()) {
-      return null;
-    }
-    const response = this.randomUnsplashImageResponse.value().response;
-    const image = Array.isArray(response) ? response[0] : response;
-    return image ?? null;
+  protected readonly backgroundImageUrl = resource({
+    params: () => {
+      if (!this.randomUnsplashImage.hasValue()) {
+        return null;
+      }
+      return this.randomUnsplashImage.value();
+    },
+    loader: async ({ params }) => {
+      if (!params) {
+        return null;
+      }
+      const url = new URL(params.urls.raw); // Validate URL
+      url.searchParams.set('w', '1920');
+      url.searchParams.set('h', '1080');
+      url.searchParams.set('fit', 'crop');
+      url.searchParams.set('fm', 'webp');
+      const urlString = url.toString();
+
+      await fetch(urlString);
+
+      return urlString;
+    },
   });
-  protected readonly backgroundImageUrl = computed<string | null>(() => {
-    const image = this.randomUnsplashImage();
-    if (!image) {
-      return null;
-    }
-    const url = new URL(image.urls.raw); // Validate URL
-    url.searchParams.set('w', '1920');
-    url.searchParams.set('h', '1080');
-    url.searchParams.set('fit', 'crop');
-    url.searchParams.set('fm', 'webp');
-    return url.toString();
+  protected readonly backgroundImageUrlOrPrevious = linkedSignal({
+    source: this.backgroundImageUrl.value,
+    computation: (url, previous) => url ?? previous,
   });
   protected readonly backgroundImageMetdata = computed(() => {
-    const image = this.randomUnsplashImage();
+    const image = this.randomUnsplashImage.value();
     if (!image) {
       return null;
     }
@@ -188,6 +199,6 @@ export class App implements OnDestroy {
   }
 
   protected reloadPhoto() {
-    this.randomUnsplashImageResponse.reload();
+    this.randomUnsplashImage.reload();
   }
 }

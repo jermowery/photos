@@ -1,5 +1,14 @@
+@if (backgroundImageUrl.isLoading()) {
+  <div class="background-image-progress-bar-container">
+    <mat-progress-bar
+      mode="indeterminate"
+      aria-label="Fetching new background image"
+    ></mat-progress-bar>
+  </div>
+}
+<mat-progress-bar></mat-progress-bar>
 <div
-  [style.background-image]="'url(' + backgroundImageUrl() + ')'"
+  [style.background-image]="'url(' + backgroundImageUrlOrPrevious() + ')'"
   class="dashboard-root"
   tabindex="0"
   (click)="reloadPhoto()"

@@ -96,3 +96,12 @@ p {
   line-height: 64px;
   vertical-align: middle;
 }
+
+.background-image-progress-bar-container {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  width: 1920px;
+  box-sizing: border-box;
+  z-index: 1000; // Ensure it appears above other content
+}
