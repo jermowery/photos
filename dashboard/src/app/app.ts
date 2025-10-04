@@ -1,11 +1,11 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { httpResource } from '@angular/common/http';
-import { Component, computed, resource, OnDestroy, linkedSignal } from '@angular/core';
+import { HttpClient, httpResource } from '@angular/common/http';
+import { Component, computed, resource, OnDestroy, linkedSignal, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { interval, map } from 'rxjs';
+import { firstValueFrom, interval, map } from 'rxjs';
 import { createApi } from 'unsplash-js';
 import { z } from 'zod';
 
@@ -50,6 +50,8 @@ const currentAirQualityResponseSchema = z.array(
   imports: [DatePipe, MatProgressSpinner, DecimalPipe, MatIcon, MatProgressBar],
 })
 export class App implements OnDestroy {
+  private readonly httpClient = inject(HttpClient);
+
   private readonly randomUnsplashImage = resource({
     loader: async () => {
       const { response } = await unsplashApi.photos.getRandom({
@@ -79,7 +81,10 @@ export class App implements OnDestroy {
       url.searchParams.set('fm', 'webp');
       const urlString = url.toString();
 
-      await fetch(urlString);
+      const httpResponse = await firstValueFrom(
+        this.httpClient.get(urlString, { responseType: 'blob' }),
+      );
+      await httpResponse.bytes(); // Wait for download to complete
 
       return urlString;
     },

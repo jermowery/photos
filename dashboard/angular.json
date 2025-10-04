@@ -32,7 +32,8 @@
               "base": "dist",
               "browser": "browser"
             },
-            "outputMode": "static"
+            "outputMode": "static",
+            "server": "src/main.server.ts"
           },
           "configurations": {
             "production": {
