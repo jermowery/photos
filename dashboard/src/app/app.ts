@@ -84,7 +84,7 @@ export class App implements OnDestroy {
       const httpResponse = await firstValueFrom(
         this.httpClient.get(urlString, { responseType: 'blob' }),
       );
-      await httpResponse.bytes(); // Wait for download to complete
+      await httpResponse.arrayBuffer(); // Wait for download to complete
 
       return urlString;
     },
