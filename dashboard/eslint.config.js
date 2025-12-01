@@ -4,6 +4,7 @@ const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
 const unusedImports = require('eslint-plugin-unused-imports');
+import eslintConfigPrettier from "eslint-config-prettier/flat";
 
 module.exports = tseslint.config(
   {
@@ -45,4 +46,5 @@ module.exports = tseslint.config(
     extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
     rules: {},
   },
+  eslintConfigPrettier,
 );

@@ -8,6 +8,8 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { firstValueFrom, interval, map } from 'rxjs';
 import { createApi } from 'unsplash-js';
 import { z } from 'zod';
+import 'onebusaway-sdk/shims/web';
+import OnebusawaySDK from 'onebusaway-sdk';
 
 const unsplashApi = createApi({
   accessKey: '6U2sy2FY2rvAYb4L3jjaEG6xzf88PEO_h4myO0Zpsfo',
@@ -51,6 +53,9 @@ const currentAirQualityResponseSchema = z.array(
 })
 export class App implements OnDestroy {
   private readonly httpClient = inject(HttpClient);
+  private readonly oneBusAwayClient = new OnebusawaySDK({
+    apiKey: 'c396ee76-1981-4b4f-af23-0250e9a8a7cc',
+  });
 
   private readonly randomUnsplashImage = resource({
     loader: async () => {
