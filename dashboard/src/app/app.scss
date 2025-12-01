@@ -6,8 +6,8 @@
   box-sizing: border-box;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: max-content max-content;
-  gap: 25% 25%;
+  grid-template-rows: max-content max-content max-content;
+  gap: 8.3% 20%;
   padding: 1rem;
   align-content: space-between;
 }
@@ -104,4 +104,9 @@ p {
   width: 1920px;
   box-sizing: border-box;
   z-index: 1000; // Ensure it appears above other content
+}
+
+.bus-departure {
+  display: flex;
+  gap: 8px;
 }

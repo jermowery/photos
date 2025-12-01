@@ -195,8 +195,20 @@ export class App implements OnDestroy {
     return airQualityIcon;
   });
   protected readonly aqi = computed(() => this.highestAqiAndCategory()?.aqi ?? 0);
+  protected readonly southboundNextDepartures = resource({
+    loader: async () =>
+      await this.oneBusAwayClient.arrivalAndDeparture.list('1_26510', {
+        minutesBefore: 1,
+      }),
+  });
+  protected readonly northboundNextDepartures = resource({
+    loader: async () =>
+      await this.oneBusAwayClient.arrivalAndDeparture.list('1_26860', {
+        minutesBefore: 1,
+      }),
+  });
 
-  private readonly intervalId = setInterval(
+  private readonly tenMinutesIntervalId = setInterval(
     () => {
       this.currentWeather.reload();
       this.currentAirQuality.reload();
@@ -204,11 +216,24 @@ export class App implements OnDestroy {
     1_000 * 60 * 10, // every 10 minutes
   );
 
+  private readonly thirtySecondsIntervalId = setInterval(
+    () => {
+      this.southboundNextDepartures.reload();
+      this.northboundNextDepartures.reload();
+    },
+    1_000 * 30, // every 30 seconds
+  );
+
   ngOnDestroy() {
-    clearInterval(this.intervalId);
+    clearInterval(this.tenMinutesIntervalId);
+    clearInterval(this.thirtySecondsIntervalId);
   }
 
   protected reloadPhoto() {
     this.randomUnsplashImage.reload();
+  }
+
+  protected minutesUntil(timestamp: number): number {
+    return Math.round((timestamp - Date.now()) / 60000);
   }
 }

@@ -55,6 +55,34 @@
     }
   </div>
   <div class="data-container">
+    @if (southboundNextDepartures.hasValue()) {
+      @let departures =
+        southboundNextDepartures.value().data.entry.arrivalsAndDepartures.slice(0, 3);
+      @for (departure of departures; track departure.tripId) {
+        @let scheduledArrivalTime = departure.scheduledArrivalTime;
+        @let predictedArrivalTime = departure.predictedArrivalTime;
+        @let tripHeadsign = departure.tripHeadsign;
+        @let routeShortName = departure.routeShortName;
+        <div class="bus-departure">
+          <div class="route-short-name">{{ routeShortName }}</div>
+          <div class="trip-headsign">{{ tripHeadsign }}</div>
+          <div class="arrival-time">
+            @if (predictedArrivalTime > 0) {
+              @let minutesUntilArrival = minutesUntil(predictedArrivalTime);
+              <span
+                ><mat-icon inline>android_wifi_3_bar</mat-icon>{{ minutesUntilArrival }}min</span
+              >
+            } @else {
+              @let minutesUntilArrival = minutesUntil(scheduledArrivalTime);
+              <span>{{ minutesUntilArrival }} min</span>
+            }
+          </div>
+        </div>
+      }
+    }
+  </div>
+  <div class="data-container"></div>
+  <div class="data-container">
     @if (currentAirQuality.hasValue()) {
       <div class="air-quality">
         <p class="display-large">
