@@ -249,17 +249,8 @@ export class App implements OnDestroy {
       this.southboundNextDepartures.reload();
       this.northboundNextDepartures.reload();
     },
-    1_000 * 30, // every 30 seconds
+    1_000 * 60, // every 60 seconds
   );
-
-  async ngOnInit() {
-    await new Promise((resolve) => setTimeout(resolve, 1000 * 60)); // Wait a bit for app to settle
-    const response = await fetch(
-      'https://api.pugetsound.onebusaway.org/api/where/arrivals-and-departures-for-stop/1_26510.json?key=c396ee76-1981-4b4f-af23-0250e9a8a7cc&minutesBefore=1',
-    );
-    const json = await response.json();
-    console.log('OBA Response:', json);
-  }
 
   ngOnDestroy() {
     clearInterval(this.tenMinutesIntervalId);
