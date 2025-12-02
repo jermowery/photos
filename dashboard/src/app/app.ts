@@ -247,10 +247,20 @@ export class App implements OnDestroy {
   private readonly thirtySecondsIntervalId = setInterval(
     () => {
       this.southboundNextDepartures.reload();
-      this.northboundNextDepartures.reload();
     },
     1_000 * 60, // every 60 seconds
   );
+
+  ngOnInit() {
+    setTimeout(() => {
+      setInterval(
+        () => {
+          this.northboundNextDepartures.reload();
+        },
+        1_000 * 60, // every 60 seconds
+      );
+    }, 1_000 * 30); // stagger by 30 seconds
+  }
 
   ngOnDestroy() {
     clearInterval(this.tenMinutesIntervalId);
