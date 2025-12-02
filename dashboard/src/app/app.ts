@@ -1,6 +1,14 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe, NgTemplateOutlet } from '@angular/common';
 import { HttpClient, httpResource } from '@angular/common/http';
-import { Component, computed, resource, OnDestroy, linkedSignal, inject } from '@angular/core';
+import {
+  Component,
+  computed,
+  resource,
+  OnDestroy,
+  linkedSignal,
+  inject,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressBar } from '@angular/material/progress-bar';
@@ -9,13 +17,21 @@ import { firstValueFrom, interval, map } from 'rxjs';
 import { createApi } from 'unsplash-js';
 import { z } from 'zod';
 import 'onebusaway-sdk/shims/web';
-import OnebusawaySDK from 'onebusaway-sdk';
+import { ArrivalAndDepartureListResponse } from 'onebusaway-sdk/resources/arrival-and-departure';
 
 const unsplashApi = createApi({
   accessKey: '6U2sy2FY2rvAYb4L3jjaEG6xzf88PEO_h4myO0Zpsfo',
 });
 
 const OPEN_WEATHER_MAP_API_KEY = '8c72a7709e2d03dad3384c8050906f83';
+const ONE_BUS_AWAY_API_KEY = 'c396ee76-1981-4b4f-af23-0250e9a8a7cc';
+
+function oneBusAwayRequestUrl(stopId: string) {
+  return (
+    `https://api.pugetsound.onebusaway.org/api/where/arrivals-and-departures-for-stop/` +
+    `${stopId}.json?key=${ONE_BUS_AWAY_API_KEY}&minutesBefore=1`
+  );
+}
 
 const currentWeatherResponseSchema = z.object({
   weather: z
@@ -45,17 +61,31 @@ const currentAirQualityResponseSchema = z.array(
   }),
 );
 
+const oneBusAwayArivalAndDepartureListResponseSchema = z.object({
+  currentTime: z.number(),
+  data: z.object({
+    entry: z.object({
+      arrivalsAndDepartures: z.array(
+        z.object({
+          tripId: z.string(),
+          scheduledArrivalTime: z.number(),
+          predictedArrivalTime: z.number(),
+          tripHeadsign: z.string(),
+          routeShortName: z.string(),
+        }),
+      ),
+    }),
+  }),
+});
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  imports: [DatePipe, MatProgressSpinner, DecimalPipe, MatIcon, MatProgressBar],
+  imports: [DatePipe, MatProgressSpinner, DecimalPipe, MatIcon, MatProgressBar, NgTemplateOutlet],
 })
 export class App implements OnDestroy {
   private readonly httpClient = inject(HttpClient);
-  private readonly oneBusAwayClient = new OnebusawaySDK({
-    apiKey: 'c396ee76-1981-4b4f-af23-0250e9a8a7cc',
-  });
 
   private readonly randomUnsplashImage = resource({
     loader: async () => {
@@ -195,18 +225,16 @@ export class App implements OnDestroy {
     return airQualityIcon;
   });
   protected readonly aqi = computed(() => this.highestAqiAndCategory()?.aqi ?? 0);
-  protected readonly southboundNextDepartures = resource({
-    loader: async () =>
-      await this.oneBusAwayClient.arrivalAndDeparture.list('1_26510', {
-        minutesBefore: 1,
-      }),
-  });
-  protected readonly northboundNextDepartures = resource({
-    loader: async () =>
-      await this.oneBusAwayClient.arrivalAndDeparture.list('1_26860', {
-        minutesBefore: 1,
-      }),
-  });
+
+  protected readonly southboundNextDepartures = httpResource(
+    () => oneBusAwayRequestUrl('1_26510'),
+    { parse: oneBusAwayArivalAndDepartureListResponseSchema.parse },
+  );
+
+  protected readonly northboundNextDepartures = httpResource(
+    () => oneBusAwayRequestUrl('1_26860'),
+    { parse: oneBusAwayArivalAndDepartureListResponseSchema.parse },
+  );
 
   private readonly tenMinutesIntervalId = setInterval(
     () => {
@@ -224,6 +252,15 @@ export class App implements OnDestroy {
     1_000 * 30, // every 30 seconds
   );
 
+  async ngOnInit() {
+    await new Promise((resolve) => setTimeout(resolve, 1000 * 60)); // Wait a bit for app to settle
+    const response = await fetch(
+      'https://api.pugetsound.onebusaway.org/api/where/arrivals-and-departures-for-stop/1_26510.json?key=c396ee76-1981-4b4f-af23-0250e9a8a7cc&minutesBefore=1',
+    );
+    const json = await response.json();
+    console.log('OBA Response:', json);
+  }
+
   ngOnDestroy() {
     clearInterval(this.tenMinutesIntervalId);
     clearInterval(this.thirtySecondsIntervalId);
@@ -233,7 +270,7 @@ export class App implements OnDestroy {
     this.randomUnsplashImage.reload();
   }
 
-  protected minutesUntil(timestamp: number): number {
-    return Math.round((timestamp - Date.now()) / 60000);
+  protected minutesUntil(timestamp: number, currentTime: number): number {
+    return Math.round((timestamp - currentTime) / 60000);
   }
 }

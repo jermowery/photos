@@ -54,34 +54,80 @@
       ></mat-progress-spinner>
     }
   </div>
-  <div class="data-container">
-    @if (southboundNextDepartures.hasValue()) {
-      @let departures =
-        southboundNextDepartures.value().data.entry.arrivalsAndDepartures.slice(0, 3);
-      @for (departure of departures; track departure.tripId) {
-        @let scheduledArrivalTime = departure.scheduledArrivalTime;
-        @let predictedArrivalTime = departure.predictedArrivalTime;
-        @let tripHeadsign = departure.tripHeadsign;
-        @let routeShortName = departure.routeShortName;
-        <div class="bus-departure">
-          <div class="route-short-name">{{ routeShortName }}</div>
-          <div class="trip-headsign">{{ tripHeadsign }}</div>
-          <div class="arrival-time">
-            @if (predictedArrivalTime > 0) {
-              @let minutesUntilArrival = minutesUntil(predictedArrivalTime);
-              <span
-                ><mat-icon inline>android_wifi_3_bar</mat-icon>{{ minutesUntilArrival }}min</span
-              >
-            } @else {
-              @let minutesUntilArrival = minutesUntil(scheduledArrivalTime);
-              <span>{{ minutesUntilArrival }} min</span>
-            }
-          </div>
+  <ng-template #busSchedule let-departuresResponse>
+    @let currentTime = departuresResponse.currentTime;
+    @let departures = departuresResponse.data.entry.arrivalsAndDepartures.slice(0, 5);
+    @for (departure of departures; track departure.tripId + $index) {
+      @let scheduledArrivalTime = departure.scheduledArrivalTime;
+      @let predictedArrivalTime = departure.predictedArrivalTime;
+      @let tripHeadsign = departure.tripHeadsign;
+      @let routeShortName = departure.routeShortName;
+      <div class="bus-departure mat-font-display-md">
+        <div class="route-short-name">{{ routeShortName }}</div>
+        <div class="trip-headsign">{{ tripHeadsign }}</div>
+        <div class="arrival-time">
+          @if (predictedArrivalTime > 0) {
+            @let minutesUntilArrival = minutesUntil(predictedArrivalTime, currentTime);
+            <span><mat-icon inline>android_wifi_3_bar</mat-icon>{{ minutesUntilArrival }}min</span>
+          } @else {
+            @let minutesUntilArrival = minutesUntil(scheduledArrivalTime, currentTime);
+            <span>{{ minutesUntilArrival }}min</span>
+          }
         </div>
-      }
+      </div>
+    }
+    <div class="mat-font-title-sm mat-text-on-surface-variant last-updated-time">
+      Updates approx every 30 seconds
+    </div>
+  </ng-template>
+  <div class="data-container">
+    <div class="mat-font-display-lg bus-direction">
+      <mat-icon class="bus-icon">departure_board</mat-icon>&nbsp;Southbound
+    </div>
+    @if (southboundNextDepartures.hasValue()) {
+      <ng-container
+        *ngTemplateOutlet="
+          busSchedule;
+          context: {
+            $implicit: southboundNextDepartures.value(),
+          }
+        "
+      ></ng-container>
+    }
+    @if (southboundNextDepartures.isLoading()) {
+      <div class="bus-schedule-progress-bar-container">
+        <mat-progress-bar
+          mode="indeterminate"
+          aria-label="Fetching new bus schedule"
+          class="bus-schedule-progress-bar"
+        ></mat-progress-bar>
+      </div>
     }
   </div>
-  <div class="data-container"></div>
+  <div class="data-container">
+    <div class="mat-font-display-lg bus-direction">
+      <mat-icon class="bus-icon">departure_board</mat-icon>&nbsp;Northbound
+    </div>
+    @if (northboundNextDepartures.hasValue()) {
+      <ng-container
+        *ngTemplateOutlet="
+          busSchedule;
+          context: {
+            $implicit: northboundNextDepartures.value(),
+          }
+        "
+      ></ng-container>
+    }
+    @if (southboundNextDepartures.isLoading()) {
+      <div class="bus-schedule-progress-bar-container">
+        <mat-progress-bar
+          mode="indeterminate"
+          aria-label="Fetching new bus schedule"
+          class="bus-schedule-progress-bar"
+        ></mat-progress-bar>
+      </div>
+    }
+  </div>
   <div class="data-container">
     @if (currentAirQuality.hasValue()) {
       <div class="air-quality">
