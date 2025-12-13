@@ -274,4 +274,21 @@ export class App implements OnDestroy {
   protected minutesUntil(timestamp: number, currentTime: number): number {
     return Math.round((timestamp - currentTime) / 60000);
   }
+
+  protected getArrivalTimeClassName(
+    scheduledArrivalTime: number,
+    predictedArrivalTime: number,
+  ): string {
+    if (predictedArrivalTime === 0) {
+      return 'scheduled';
+    }
+    const diff = predictedArrivalTime - scheduledArrivalTime;
+    if (diff >= 1_000 * 60) {
+      return 'late';
+    } else if (diff <= -1_000 * 60) {
+      return 'early';
+    } else {
+      return 'on-time';
+    }
+  }
 }

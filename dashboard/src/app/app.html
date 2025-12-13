@@ -69,12 +69,18 @@
           @if (predictedArrivalTime > 0) {
             @let minutesUntilArrival = minutesUntil(predictedArrivalTime, currentTime);
             <span
+              class="arrival-time"
+              [class]="getArrivalTimeClassName(scheduledArrivalTime, predictedArrivalTime)"
               ><mat-icon class="predicted-time-icon">wifi_3_bar</mat-icon
               >{{ minutesUntilArrival }}min</span
             >
           } @else {
             @let minutesUntilArrival = minutesUntil(scheduledArrivalTime, currentTime);
-            <span>{{ minutesUntilArrival }}min</span>
+            <span
+              class="arrival-time"
+              [class]="getArrivalTimeClassName(scheduledArrivalTime, predictedArrivalTime)"
+              >{{ minutesUntilArrival }}min</span
+            >
           }
         </div>
       </div>

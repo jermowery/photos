@@ -154,5 +154,23 @@ p {
 
 .predicted-time-icon {
   transform: rotate(-45deg);
-  color: var(--mat-sys-tertiary);
+}
+
+.arrival-time {
+  &.on-time {
+    // Green
+    color: var(--mat-sys-primary-fixed);
+  }
+  &.late {
+    // Blue
+    color: mediumturquoise;
+  }
+  &.early {
+    // Red
+    color: var(--mat-sys-error);
+  }
+  &.scheduled {
+    // Default color
+    color: var(--mat-sys-on-surface);
+  }
 }
