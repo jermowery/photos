@@ -68,7 +68,10 @@
         <div class="arrival-time">
           @if (predictedArrivalTime > 0) {
             @let minutesUntilArrival = minutesUntil(predictedArrivalTime, currentTime);
-            <span><mat-icon inline>android_wifi_3_bar</mat-icon>{{ minutesUntilArrival }}min</span>
+            <span
+              ><mat-icon class="predicted-time-icon">wifi_3_bar</mat-icon
+              >{{ minutesUntilArrival }}min</span
+            >
           } @else {
             @let minutesUntilArrival = minutesUntil(scheduledArrivalTime, currentTime);
             <span>{{ minutesUntilArrival }}min</span>
