@@ -7,7 +7,6 @@ import {
   OnDestroy,
   linkedSignal,
   inject,
-  signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
@@ -17,7 +16,6 @@ import { firstValueFrom, interval, map } from 'rxjs';
 import { createApi } from 'unsplash-js';
 import { z } from 'zod';
 import 'onebusaway-sdk/shims/web';
-import { ArrivalAndDepartureListResponse } from 'onebusaway-sdk/resources/arrival-and-departure';
 
 const unsplashApi = createApi({
   accessKey: '6U2sy2FY2rvAYb4L3jjaEG6xzf88PEO_h4myO0Zpsfo',
