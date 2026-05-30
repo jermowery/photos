@@ -33,18 +33,20 @@
       </div>
       <div class="weather-details">
         <table class="weather-details-table">
-          <tr>
-            <th class="display-small" scope="row">Humidity:</th>
-            <td class="display-small">
-              {{ currentWeather.value().main.humidity | number: '1.0-0' }}%
-            </td>
-          </tr>
-          <tr>
-            <th class="display-small" scope="row">Wind Speed:</th>
-            <td class="display-small">
-              {{ currentWeather.value().wind.speed | number: '1.0-0' }} mph
-            </td>
-          </tr>
+          <tbody>
+            <tr>
+              <th class="display-small" scope="row">Humidity:</th>
+              <td class="display-small">
+                {{ currentWeather.value().main.humidity | number: '1.0-0' }}%
+              </td>
+            </tr>
+            <tr>
+              <th class="display-small" scope="row">Wind Speed:</th>
+              <td class="display-small">
+                {{ currentWeather.value().wind.speed | number: '1.0-0' }} mph
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     } @else {
@@ -54,39 +56,46 @@
       ></mat-progress-spinner>
     }
   </div>
-  <ng-template #busSchedule let-departuresResponse>
-    @let currentTime = departuresResponse.currentTime;
-    @let departures = departuresResponse.data.entry.arrivalsAndDepartures.slice(0, 5);
-    @for (departure of departures; track departure.tripId + $index) {
-      @let scheduledArrivalTime = departure.scheduledArrivalTime;
-      @let predictedArrivalTime = departure.predictedArrivalTime;
-      @let tripHeadsign = departure.tripHeadsign;
-      @let routeShortName = departure.routeShortName;
-      <div class="bus-departure mat-font-display-md">
-        <div class="route-short-name">{{ routeShortName }}</div>
-        <div class="trip-headsign">{{ tripHeadsign }}</div>
-        <div class="arrival-time">
-          @if (predictedArrivalTime > 0) {
-            @let minutesUntilArrival = minutesUntil(predictedArrivalTime, currentTime);
-            <span
-              class="arrival-time"
-              [class]="getArrivalTimeClassName(scheduledArrivalTime, predictedArrivalTime)"
-              ><mat-icon class="predicted-time-icon">wifi_3_bar</mat-icon
-              >{{ minutesUntilArrival }}min</span
-            >
-          } @else {
-            @let minutesUntilArrival = minutesUntil(scheduledArrivalTime, currentTime);
-            <span
-              class="arrival-time"
-              [class]="getArrivalTimeClassName(scheduledArrivalTime, predictedArrivalTime)"
-              >{{ minutesUntilArrival }}min</span
-            >
-          }
+  <ng-template #busSchedule let-departuresResponse let-updatedLabel="updatedLabel">
+    <div class="departures">
+      @let currentTime = departuresResponse.currentTime;
+      @let departures = departuresResponse.data.entry.arrivalsAndDepartures.slice(0, 5);
+      @for (departure of departures; track departure.tripId + $index) {
+        @let scheduledArrivalTime = departure.scheduledArrivalTime;
+        @let predictedArrivalTime = departure.predictedArrivalTime;
+        @let tripHeadsign = departure.tripHeadsign;
+        @let routeShortName = departure.routeShortName;
+        <div class="bus-departure mat-font-display-md">
+          <div class="route-short-name">{{ routeShortName }}</div>
+          <div class="trip-headsign">{{ tripHeadsign }}</div>
+          <div class="arrival-time">
+            @if (predictedArrivalTime > 0) {
+              @let minutesUntilArrival = minutesUntil(predictedArrivalTime, currentTime);
+              <span
+                class="arrival-time"
+                [class]="getArrivalTimeClassName(scheduledArrivalTime, predictedArrivalTime)"
+                ><mat-icon class="predicted-time-icon">wifi_3_bar</mat-icon
+                >{{ minutesUntilArrival }}min</span
+              >
+            } @else {
+              @let minutesUntilArrival = minutesUntil(scheduledArrivalTime, currentTime);
+              <span
+                class="arrival-time"
+                [class]="getArrivalTimeClassName(scheduledArrivalTime, predictedArrivalTime)"
+                >{{ minutesUntilArrival }}min</span
+              >
+            }
+          </div>
         </div>
+      }
+    </div>
+    <div class="departures-metadata">
+      <div class="mat-font-title-sm mat-text-on-surface-variant last-updated-time">
+        Last updated: {{ updatedLabel }}
       </div>
-    }
-    <div class="mat-font-title-sm mat-text-on-surface-variant last-updated-time">
-      Updates approx every 60 seconds
+      <div class="mat-font-title-sm mat-text-on-surface-variant last-updated-time">
+        Updates approx every 60 seconds
+      </div>
     </div>
   </ng-template>
   <div class="data-container">
@@ -99,6 +108,7 @@
           busSchedule;
           context: {
             $implicit: southboundNextDepartures.value(),
+            updatedLabel: southboundUpdatedLabel(),
           }
         "
       ></ng-container>
@@ -123,6 +133,7 @@
           busSchedule;
           context: {
             $implicit: northboundNextDepartures.value(),
+            updatedLabel: northboundUpdatedLabel(),
           }
         "
       ></ng-container>
@@ -140,9 +151,7 @@
   <div class="data-container">
     @if (currentAirQuality.hasValue()) {
       <div class="air-quality">
-        <p class="display-large">
-          {{ aqiCategoryIcon() }} {{ aqi() }} <span>({{ aqiParameter() }})</span>
-        </p>
+        <p class="display-large">AQI: {{ aqiCategoryIcon() }} {{ aqi() }}</p>
         <p class="display-small">{{ aqiCategory() }}</p>
       </div>
     } @else {

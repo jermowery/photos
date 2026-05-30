@@ -7,6 +7,8 @@ import {
   OnDestroy,
   linkedSignal,
   inject,
+  signal,
+  effect,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
@@ -23,6 +25,7 @@ const unsplashApi = createApi({
 
 const OPEN_WEATHER_MAP_API_KEY = '8c72a7709e2d03dad3384c8050906f83';
 const ONE_BUS_AWAY_API_KEY = 'c396ee76-1981-4b4f-af23-0250e9a8a7cc';
+const RTF = new Intl.RelativeTimeFormat('en', { style: 'short' });
 
 function oneBusAwayRequestUrl(stopId: string) {
   return (
@@ -228,11 +231,41 @@ export class App implements OnDestroy {
     () => oneBusAwayRequestUrl('1_26510'),
     { parse: oneBusAwayArivalAndDepartureListResponseSchema.parse },
   );
+  protected readonly southboundNextDepaturesLastUpdated = computed(() => {
+    void this.southboundNextDepartures.value(); // Track changes to departures
+    return new Date();
+  });
+  protected readonly southboundUpdatedLabel = computed(() =>
+    RTF.format(
+      Math.round(
+        (this.everySecond().getTime() - this.southboundNextDepaturesLastUpdated().getTime()) /
+          1_000,
+      ),
+      'seconds',
+    ),
+  );
 
   protected readonly northboundNextDepartures = httpResource(
-    () => oneBusAwayRequestUrl('1_26860'),
+    () => oneBusAwayRequestUrl('1_26862'),
     { parse: oneBusAwayArivalAndDepartureListResponseSchema.parse },
   );
+  protected readonly northboundNextDepaturesLastUpdated = computed(() => {
+    void this.northboundNextDepartures.value(); // Track changes to departures
+    return new Date();
+  });
+  protected readonly northboundUpdatedLabel = computed(() =>
+    RTF.format(
+      Math.round(
+        (this.everySecond().getTime() - this.northboundNextDepaturesLastUpdated().getTime()) /
+          1_000,
+      ),
+      'seconds',
+    ),
+  );
+
+  protected readonly everySecond = toSignal(interval(1_000 * 60).pipe(map(() => new Date())), {
+    initialValue: new Date(),
+  });
 
   private readonly tenMinutesIntervalId = setInterval(
     () => {
