@@ -60,7 +60,7 @@
     <div class="departures">
       @let currentTime = departuresResponse.currentTime;
       @let departures = departuresResponse.data.entry.arrivalsAndDepartures.slice(0, 5);
-      @for (departure of departures; track departure.tripId + $index) {
+      @for (departure of departures; track $index) {
         @let scheduledArrivalTime = departure.scheduledArrivalTime;
         @let predictedArrivalTime = departure.predictedArrivalTime;
         @let tripHeadsign = departure.tripHeadsign;
@@ -138,7 +138,7 @@
         "
       ></ng-container>
     }
-    @if (southboundNextDepartures.isLoading()) {
+    @if (northboundNextDepartures.isLoading()) {
       <div class="bus-schedule-progress-bar-container">
         <mat-progress-bar
           mode="indeterminate"

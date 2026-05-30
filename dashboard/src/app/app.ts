@@ -231,41 +231,35 @@ export class App implements OnDestroy {
     () => oneBusAwayRequestUrl('1_26510'),
     { parse: oneBusAwayArivalAndDepartureListResponseSchema.parse },
   );
-  protected readonly southboundNextDepaturesLastUpdated = computed(() => {
-    void this.southboundNextDepartures.value(); // Track changes to departures
-    return new Date();
-  });
-  protected readonly southboundUpdatedLabel = computed(() =>
-    RTF.format(
-      Math.round(
-        (this.everySecond().getTime() - this.southboundNextDepaturesLastUpdated().getTime()) /
-          1_000,
-      ),
+  protected readonly southboundNextDepaturesLastUpdated = signal<Date | undefined>(undefined);
+  protected readonly southboundUpdatedLabel = computed(() => {
+    const lastUpdated = this.southboundNextDepaturesLastUpdated();
+    if (!lastUpdated) {
+      return 'Never';
+    }
+    return RTF.format(
+      Math.round((lastUpdated.getTime() - this.everySecond().getTime()) / 1_000),
       'seconds',
-    ),
-  );
+    );
+  });
 
   protected readonly northboundNextDepartures = httpResource(
     () => oneBusAwayRequestUrl('1_26862'),
     { parse: oneBusAwayArivalAndDepartureListResponseSchema.parse },
   );
-  protected readonly northboundNextDepaturesLastUpdated = computed(() => {
-    void this.northboundNextDepartures.value(); // Track changes to departures
-    return new Date();
-  });
-  protected readonly northboundUpdatedLabel = computed(() =>
-    RTF.format(
-      Math.round(
-        (this.everySecond().getTime() - this.northboundNextDepaturesLastUpdated().getTime()) /
-          1_000,
-      ),
+  protected readonly northboundNextDepaturesLastUpdated = signal<Date | undefined>(undefined);
+  protected readonly northboundUpdatedLabel = computed(() => {
+    const lastUpdated = this.northboundNextDepaturesLastUpdated();
+    if (!lastUpdated) {
+      return 'Never';
+    }
+    return RTF.format(
+      Math.round((lastUpdated.getTime() - this.everySecond().getTime()) / 1_000),
       'seconds',
-    ),
-  );
-
-  protected readonly everySecond = toSignal(interval(1_000 * 60).pipe(map(() => new Date())), {
-    initialValue: new Date(),
+    );
   });
+
+  protected readonly everySecond = signal(new Date());
 
   private readonly tenMinutesIntervalId = setInterval(
     () => {
@@ -291,11 +285,33 @@ export class App implements OnDestroy {
         1_000 * 60, // every 60 seconds
       );
     }, 1_000 * 30); // stagger by 30 seconds
+    setInterval(() => {
+      this.everySecond.set(new Date());
+    }, 1_000);
   }
 
   ngOnDestroy() {
     clearInterval(this.tenMinutesIntervalId);
     clearInterval(this.thirtySecondsIntervalId);
+  }
+
+  constructor() {
+    effect(() => {
+      try {
+        void this.southboundNextDepartures.value();
+      } catch {
+        return;
+      }
+      this.southboundNextDepaturesLastUpdated.set(new Date());
+    });
+    effect(() => {
+      try {
+        void this.northboundNextDepartures.value();
+      } catch {
+        return;
+      }
+      this.northboundNextDepaturesLastUpdated.set(new Date());
+    });
   }
 
   protected reloadPhoto() {
