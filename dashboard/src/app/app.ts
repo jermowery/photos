@@ -90,12 +90,19 @@ export class App implements OnDestroy {
 
   private readonly randomUnsplashImage = resource({
     loader: async () => {
-      const { response } = await unsplashApi.photos.getRandom({
-        count: 1,
-        orientation: 'landscape',
-        collectionIds: ['bofgKPsR7eg'], // Cute animals
+      const { data, error } = await unsplashApi.GET('/photos/random', {
+        params: {
+          query: {
+            count: 1,
+            orientation: 'landscape',
+            collections: ['bofgKPsR7eg'], // Cute animals
+          },
+        },
       });
-      const image = Array.isArray(response) ? response[0] : response;
+      if (error) {
+        return null;
+      }
+      const image = Array.isArray(data) ? data[0] : data;
       return image ?? null;
     },
   });
@@ -134,31 +141,11 @@ export class App implements OnDestroy {
     if (!image) {
       return null;
     }
-    const exifParts: string[] = [];
-    if (image.exif.make) {
-      exifParts.push(image.exif.make);
-      if (image.exif.model) {
-        exifParts.push(image.exif.model);
-      }
-    }
-    if (image.exif.focal_length) {
-      exifParts.push(`${image.exif.focal_length}mm`);
-    }
-    if (image.exif.aperture) {
-      exifParts.push(`ƒ/${image.exif.aperture}`);
-    }
-    if (image.exif.exposure_time) {
-      exifParts.push(`${image.exif.exposure_time}s`);
-    }
-    if (image.exif.iso) {
-      exifParts.push(`ISO ${image.exif.iso}`);
-    }
     return {
-      description: image.alt_description,
+      description: image.description,
       authorName: image.user.name,
       authorProfileImageUrl: image.user.profile_image.medium,
-      location: image.location.city,
-      exif: exifParts.length > 0 ? exifParts.join(', ') : null,
+      location: image.user.location,
     };
   });
   protected readonly currentDate = toSignal(interval(1_000 * 60).pipe(map(() => new Date())), {
