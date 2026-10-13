@@ -75,6 +75,7 @@
     }
   },
   "cli": {
+    "packageManager": "bun",
     "analytics": "a4c15a0e-783f-44ed-aec0-1ef3baf52dd6",
     "schematicCollections": ["angular-eslint"]
   }

@@ -2,6 +2,7 @@
   "name": "dashboard",
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "bun@1.4.3",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -9,7 +10,7 @@
     "watch": "ng build --watch --configuration development",
     "lint": "ng lint",
     "deploy": "ng deploy --base-href=/photos/",
-    "serve:ssr:dashboard": "node dist/server/server.mjs",
+    "serve:ssr:dashboard": "bun dist/server/server.mjs",
     "prepare": "husky"
   },
   "prettier": {
@@ -64,10 +65,10 @@
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.71.0"
   },
-  "allowScripts": {
-    "msgpackr-extract@3.0.4": true,
-    "@parcel/watcher@2.6.0": true,
-    "esbuild@0.28.2": true,
-    "lmdb@3.5.6": true
-  }
+  "trustedDependencies": [
+    "msgpackr-extract",
+    "@parcel/watcher",
+    "esbuild",
+    "lmdb"
+  ]
 }
