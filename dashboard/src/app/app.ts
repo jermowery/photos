@@ -54,11 +54,9 @@ const currentWeatherResponseSchema = z.object({
 
 const currentAirQualityResponseSchema = z.array(
   z.object({
-    ParameterName: z.string(),
-    AQI: z.number(),
-    Category: z.object({
-      Name: z.string(),
-    }),
+    parameterName: z.string(),
+    nowcastAQI: z.number(),
+    aqiCategoryName: z.string(),
   }),
 );
 
@@ -159,7 +157,7 @@ export class App implements OnDestroy {
   );
   protected readonly currentAirQuality = httpResource(
     () =>
-      'https://www.airnowapi.org/aq/observation/zipCode/current/?format=application/json' +
+      'https://www.airnowapi.org/aq/observation/current/ziplatlong/?format=application/json' +
       '&zipCode=98109&distance=25&API_KEY=023C7554-7950-48FC-806C-28F20B534CFD',
     { parse: currentAirQualityResponseSchema.parse },
   );
@@ -173,12 +171,12 @@ export class App implements OnDestroy {
     }
     // Find the observation with the highest AQI
     const observation = observations.reduce((prev, current) =>
-      prev.AQI > current.AQI ? prev : current,
+      prev.nowcastAQI > current.nowcastAQI ? prev : current,
     );
     return {
-      aqi: observation.AQI,
-      category: observation.Category.Name,
-      parameter: observation.ParameterName,
+      aqi: observation.nowcastAQI,
+      category: observation.aqiCategoryName,
+      parameter: observation.parameterName,
     };
   });
   protected readonly aqiParameter = computed(() => {
